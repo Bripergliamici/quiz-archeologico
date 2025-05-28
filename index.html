@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Che tipo di archeologo sei?</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background-color: #fdf6e3;
+      color: #333;
+      max-width: 700px;
+      margin: auto;
+    }
+    h1, h2 {
+      color: #8b4513;
+      text-align: center;
+    }
+    .question {
+      margin-bottom: 2rem;
+      padding: 1rem;
+      border: 1px solid #deb887;
+      border-radius: 5px;
+      background-color: #fff8dc;
+    }
+    .question p {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    label {
+      cursor: pointer;
+      user-select: none;
+    }
+    button {
+      display: block;
+      margin: 1rem auto 3rem;
+      padding: 0.7rem 2rem;
+      background-color: #8b4513;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #a0522d;
+    }
+    #result {
+      background-color: #fff8dc;
+      border: 1px solid #deb887;
+      padding: 1rem;
+      border-radius: 5px;
+      display: none;
+    }
+    #disclaimer {
+      font-size: 0.9rem;
+      color: #555;
+      text-align: center;
+      margin-bottom: 1rem;
+      font-style: italic;
+    }
+    footer {
+      margin-top: 3rem;
+      font-size: 0.9rem;
+      color: #555;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>Che tipo di archeologo sei?</h1>
+
+  <form id="quizForm"></form>
+
+  <div id="disclaimer">Questo quiz è puramente amatoriale e nessun dato verrà registrato.</div>
+
+  <button id="submitBtn">Scopri il tuo profilo</button>
+
+  <div id="result"></div>
+
+  <footer>
+    <p><em>Questo quiz è puramente amatoriale e nessun dato verrà registrato.</em></p>
+  </footer>
+
+<script>
+  // Dati domande e risposte (ordine fisso)
+  const quizData = [
+    {
+      question: "1. Cosa ti incuriosisce di più in un film o documentario storico?",
+      answers: [
+        "Tecnologia e strumenti digitali",
+        "Civiltà antiche e leggende",
+        "Avventure in luoghi misteriosi",
+        "Spiegazioni teoriche",
+        "Tradizioni attuali",
+        "Vita quotidiana e salute nel passato"
+      ]
+    },
+    {
+      question: "2. Quale luogo ti attira di più?",
+      answers: [
+        "Un laboratorio hi-tech",
+        "Il Colosseo o l'Acropoli",
+        "Una piramide nascosta nella giungla",
+        "Una grande biblioteca",
+        "Un villaggio tradizionale",
+        "Una tomba con scheletri antichi"
+      ]
+    },
+    {
+      question: "3. Se potessi scegliere un oggetto da studiare, cosa sarebbe?",
+      answers: [
+        "Un drone per rilievi",
+        "Una statua greca",
+        "Un tesoro nascosto",
+        "Un antico manoscritto",
+        "Un amuleto di una tribù",
+        "Uno scheletro umano"
+      ]
+    },
+    {
+      question: "4. Quale attività preferisci?",
+      answers: [
+        "Usare software 3D",
+        "Visitare musei storici",
+        "Cercare reperti in natura",
+        "Leggere articoli scientifici",
+        "Parlare con le comunità locali",
+        "Analizzare ossa e denti"
+      ]
+    },
+    {
+      question: "5. Come ti vedi nel lavoro?",
+      answers: [
+        "Davanti a uno schermo, analizzando dati",
+        "In un sito classico, mappa alla mano",
+        "Con uno zaino e una torcia",
+        "A scrivere un saggio",
+        "Tra persone e culture",
+        "In laboratorio con reperti biologici"
+      ]
+    },
+    {
+      question: "6. Quale serie TV o film ti rappresenta di più?",
+      answers: [
+        "CSI: Scena del crimine",
+        "Rome",
+        "Indiana Jones",
+        "Merlino o The Crown",
+        "Tribes",
+        "Bones"
+      ]
+    },
+    {
+      question: "7. Cosa ti interessa di più dell'essere archeologo?",
+      answers: [
+        "Scoprire nuovi metodi di indagine",
+        "Capire la storia dell'antichità",
+        "Vivere l’adrenalina della scoperta",
+        "Contribuire alla ricerca accademica",
+        "Conoscere popoli diversi",
+        "Comprendere la salute antica"
+      ]
+    },
+    {
+      question: "8. Cosa porteresti con te in uno scavo?",
+      answers: [
+        "Tablet con GPS",
+        "Libri su arte antica",
+        "Corda e piccone",
+        "Quaderno per appunti",
+        "Registratore vocale",
+        "Kit da laboratorio"
+      ]
+    },
+    {
+      question: "9. Con chi vorresti lavorare?",
+      answers: [
+        "Ingegneri e informatici",
+        "Storici e filologi",
+        "Esploratori e speleologi",
+        "Professori universitari",
+        "Antropologi e sociologi",
+        "Biologi e medici legali"
+      ]
+    },
+    {
+      question: "10. Qual è il tuo motto?",
+      answers: [
+        '"La tecnologia fa la differenza"',
+        '"Il passato è la chiave del presente"',
+        '"Esplora, sogna, scopri"',
+        '"Sapere è potere"',
+        '"Ogni cultura ha una voce"',
+        '"Il corpo racconta la storia"'
+      ]
+    }
+  ];
+
+  const profili = {
+    A: {
+      title: "🧠 Il Tecnologico",
+      desc: "Ami l’innovazione, gli strumenti digitali e le nuove tecnologie. Per te il futuro è la chiave per studiare il passato."
+    },
+    B: {
+      title: "🏛️ Il Classico",
+      desc: "Ti appassiona il mondo greco-romano, le mitologie e i grandi imperi antichi."
+    },
+    C: {
+      title: "🧭 Il Cacciatore di Tesori",
+      desc: "Ami l’avventura, l’esplorazione e i misteri nascosti sotto terra."
+    },
+    D: {
+      title: "📚 L’Accademico",
+      desc: "Ti piace analizzare, leggere e approfondire. Cerchi risposte con metodo e logica."
+    },
+    E: {
+      title: "🌍 L’Etnoarcheologo",
+      desc: "Ti affascinano le culture viventi e il legame tra presente e passato."
+    },
+    F: {
+      title: "💀 Il Bioarcheologo",
+      desc: "Osservi i resti umani per capire come vivevano e morivano le persone nel passato."
+    }
+  };
+
+  function creaQuiz() {
+    const form = document.getElementById("quizForm");
+    form.innerHTML = "";
+    const lettere = ["A", "B", "C", "D", "E", "F"];
+
+    quizData.forEach((item, qIndex) => {
+      const div = document.createElement("div");
+      div.classList.add("question");
+
+      const p = document.createElement("p");
+      p.textContent = item.question;
+      div.appendChild(p);
+
+      // Risposte in ordine fisso
+      item.answers.forEach((risposta, i) => {
+        const label = document.createElement("label");
+        label.innerHTML = `<input type="radio" name="q${qIndex+1}" value="${lettere[i]}"> ${lettere[i]}. ${risposta}`;
+        div.appendChild(label);
+        div.appendChild(document.createElement("br"));
+      });
+
+      form.appendChild(div);
+    });
+  }
+
+  function calcolaRisultato() {
+    const risposteSelezionate = {};
+    let tutteRisposte = true;
+
+    for(let i = 1; i <= quizData.length; i++) {
+      const risposta = document.querySelector(`input[name=q${i}]:checked`);
+      if(!risposta) {
+        tutteRisposte = false;
+        break;
+      }
+      const val = risposta.value;
+      risposteSelezionate[val] = (risposteSelezionate[val] || 0) + 1;
+    }
+
+    if(!tutteRisposte) {
+      alert("Per favore, rispondi a tutte le domande!");
+      return;
+    }
+
+    let maxLettera = null;
+    let maxPunteggio = 0;
+    for(const lettera in risposteSelezionate) {
+      if(risposteSelezionate[lettera] > maxPunteggio) {
+        maxPunteggio = risposteSelezionate[lettera];
+        maxLettera = lettera;
+      }
+    }
+
+    const resultDiv = document.getElementById("result");
+    const profilo = profili[maxLettera];
+    resultDiv.style.display = "block";
+    resultDiv.innerHTML = `<h2>${profilo.title}</h2><p>${profilo.desc}</p>`;
+  }
+
+  creaQuiz();
+
+  document.getElementById("submitBtn").addEventListener("click", (e) => {
+    e.preventDefault();
+    calcolaRisultato();
+  });
+</script>
+</body>
+</html>
